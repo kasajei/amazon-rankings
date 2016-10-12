@@ -41,7 +41,6 @@ class CheckRankingPeriodicTask(APIView):
         books = []
         # 全部のランキングを取得する
         for i in range(1, 6):
-            print wish_list_ranking + u"?pg=" + str(i)
             results = urlfetch.fetch(
                 url=wish_list_ranking + u"?pg=" + str(i),
                 method=urlfetch.GET

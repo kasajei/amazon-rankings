@@ -51,7 +51,8 @@ class Ranking(models.Model):
 
     )
     wish_ranking = models.IntegerField(
-
+        null=True,
+        blank=True
     )
     created = models.DateTimeField(
         auto_now_add=True

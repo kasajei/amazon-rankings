@@ -21,6 +21,10 @@ urlpatterns = [
     url(r'^csp/', include('cspreports.urls')),
 
     url(r'^auth/', include('djangae.contrib.gauth.urls')),
+    url(r'^book/', include('book.urls')),
+
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^docs/', include('rest_framework_swagger.urls')),
 ]
 
 if settings.DEBUG:

@@ -1,0 +1,5 @@
+cron:
+- description: Fetch Amazon Ranking
+  url: /boook/tasks/periodic/checkRanking
+  schedule: every day 09:00
+  target: 1

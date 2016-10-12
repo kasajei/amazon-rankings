@@ -25,6 +25,11 @@ handlers:
   secure: always
   login: admin
 
+- url: /.*/tasks/.*
+  script: amazon_ranking.wsgi.application
+  secure: always
+  login: admin
+
 - url: /.*
   script: amazon_ranking.wsgi.application
   secure: always

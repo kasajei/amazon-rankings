@@ -125,7 +125,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 CSP_DEFAULT_SRC = ("'self'", "*.gstatic.com")
 # Inline styles are unsafe, but Django error pages use them. We later remove
 # `unsafe-inline` in settings_live.py
-CSP_STYLE_SRC = ("'self'", "'unsafe-inline'", "fonts.googleapis.com", "*.gstatic.com")
+CSP_STYLE_SRC = ("'self'", "'unsafe-inline'", "fonts.googleapis.com", "*.gstatic.com", "'unsafe-inline'")
 CSP_FONT_SRC = ("'self'", "themes.googleusercontent.com", "*.gstatic.com")
 CSP_FRAME_SRC = ("'self'", "www.google.com", "www.youtube.com", "accounts.google.com", "apis.google.com", "plus.google.com")
 CSP_SCRIPT_SRC = ("'self'", "*.googleanalytics.com", "*.google-analytics.com", "ajax.googleapis.com", "'unsafe-inline'")

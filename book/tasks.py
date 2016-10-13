@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 import json
+import logging
 
 from google.appengine.api import urlfetch
 from google.appengine.api.taskqueue import taskqueue
@@ -127,6 +128,5 @@ def post_to_slack(ranking,
             payload=json.dumps(payload),
             method=urlfetch.POST
         )
-    except:
-        pass
-
+    except Exception as e:
+        logging.info(e)

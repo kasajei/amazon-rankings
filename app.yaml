@@ -4,6 +4,21 @@ runtime: python27
 api_version: 1
 threadsafe: true
 
+automatic_scaling:
+  min_idle_instances: automatic   # idle状態にあるインスタンスの最小値
+  max_idle_instances: 1                 # idle状態にあるインスタンスの最大値
+  min_pending_latency: 3000ms  # リクエストを処理するまでに許される待ち時間の最小
+  max_pending_latency: automatic
+
+
+libraries:
+- name: ssl
+  version: latest
+- name: PIL
+  version: "1.1.7"
+- name: webob
+  version: "1.1.1"
+
 handlers:
 
 - url: /_ah/(mapreduce|queue|warmup|start|stop).*

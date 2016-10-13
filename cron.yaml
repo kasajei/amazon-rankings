@@ -1,5 +1,5 @@
 cron:
 - description: Fetch Amazon Ranking
   url: /book/tasks/periodic/checkRanking
-  schedule: every day 09:00
+  schedule: every day 01:00
   target: 1

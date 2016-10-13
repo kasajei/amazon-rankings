@@ -44,7 +44,7 @@ class Book(models.Model):
 
 
 class Ranking(models.Model):
-    book = models.OneToOneField(
+    book = models.ForeignKey(
         Book
     )
     date = models.DateField(

@@ -22,6 +22,17 @@ indexes:
 
 - kind: book_ranking
   properties:
+  - name: book_id
+  - name: wish_ranking
+    direction: desc
+
+- kind: book_ranking
+  properties:
+  - name: date
+  - name: book_id
+
+- kind: book_ranking
+  properties:
   - name: date
     direction: desc
   - name: wish_ranking

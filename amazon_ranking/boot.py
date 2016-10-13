@@ -29,6 +29,7 @@ def get_app_config():
     class Config(ndb.Model):
         """A simple key-value store for application configuration settings."""
         secret_key = ndb.StringProperty()
+        slack_url = ndb.StringProperty()
 
     # Create a random SECRET_KEY
     chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
@@ -42,6 +43,9 @@ def get_app_config():
         if not entity:
             entity = Config(key=key)
             entity.secret_key = get_random_string(50, chars)
+            entity.put()
+        if not entity.slack_url:
+            entity.slack_url = "YOUR_SLACK_HOOK_URL_HERE"
             entity.put()
         return entity
     return txn()

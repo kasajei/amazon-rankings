@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Django settings for amazon_ranking project.
 
@@ -142,3 +143,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
     ]
 }
+
+
+SLACK_HOOK_URL = get_app_config().slack_url
+SLACK_DEFAULTS_USERNAME = u"Amazonおすすめ"
+SLACK_DEFAULTS_CHANNEL = u"#playground"

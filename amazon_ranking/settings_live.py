@@ -36,3 +36,6 @@ for template in TEMPLATES:
         template['OPTIONS']['loaders'] = [
             ('django.template.loaders.cached.Loader', template['OPTIONS']['loaders'])
         ]
+
+
+SLACK_DEFAULTS_CHANNEL = u"#amazon"

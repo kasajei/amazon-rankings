@@ -6,7 +6,7 @@ import logging
 from google.appengine.api import urlfetch
 from google.appengine.api.taskqueue import taskqueue
 
-from book.models import Book, Ranking
+from book.models import Book, Ranking, Report
 from pytz import UTC
 
 from django.conf import settings
@@ -93,12 +93,18 @@ class BookPostTaskView(APIView):
         today = now.date()
         yesterday = one_day_ago.date()
         yesterday_ranking = Ranking.objects.filter(date=yesterday).values_list("book_id", flat=True)
-        today_ranking = Ranking.objects.filter(date=today).values_list("book_id", flat=True)
+        today_ranking = Ranking.objects.filter(date=today).order_by("wish_ranking").values_list("book_id", flat=True)
         diff = filter(lambda x: x not in yesterday_ranking, today_ranking)
-        # TODO: 以前に通知したかどうか
-        rankings = Ranking.objects.filter(book_id__in=diff).prefetch_related("book").order_by("-wish_ranking")
+        diff = diff[:30]
+        reported = Report.objects.filter(book_id__in=diff).values_list("book_id", flat=True)
+        report = filter(lambda x: x not in reported, diff)
+        rankings = Ranking.objects.filter(
+            date=today,
+            book_id__in=report
+        ).prefetch_related("book").order_by("-wish_ranking")
         for ranking in rankings:
             post_to_slack(ranking)
+            Report.objects.get_or_create(book=ranking.book)
         return Response()
 
 
@@ -130,3 +136,51 @@ def post_to_slack(ranking,
         )
     except Exception as e:
         logging.info(e)
+
+
+
+class PostToSlack(APIView):
+    def post(self, request):
+        """
+        Slackへポスト
+        ---
+        parameters:
+                -   name: APIKEY
+                    type: string
+                    paramType: header
+                    defaultValue: zBwjuGLAe7m2FaWv
+                -   name: text
+                    type: string
+                -   name: username
+                    type: string
+                -   name: channel
+                    type: string
+                -   name: icon
+                    type: string
+                -   name: url
+                    type: string
+        """
+        text = request.POST.get("text")
+        username = request.POST.get("username", settings.SLACK_DEFAULTS_USERNAME)
+        icon = request.POST.get("icon", ":fire:")
+        channel = request.POST.get("channel", settings.SLACK_DEFAULTS_CHANNEL)
+        url = request.POST.get("url", settings.SLACK_HOOK_URL)
+        payload = {
+            "channel": channel,
+            "icon_emoji": icon,
+            "username": username,
+            "link_names": 1,
+            "text": text
+        }
+        try:
+            resutls = urlfetch.fetch(
+                url=url,
+                payload=json.dumps(payload),
+                method=urlfetch.POST
+            )
+            print resutls.content
+        except Exception as e:
+            print e
+            print e.description
+            pass
+        return Response()

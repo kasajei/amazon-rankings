@@ -23,6 +23,13 @@ indexes:
 - kind: book_ranking
   properties:
   - name: book_id
+  - name: date
+  - name: wish_ranking
+    direction: desc
+
+- kind: book_ranking
+  properties:
+  - name: book_id
   - name: wish_ranking
     direction: desc
 
@@ -30,6 +37,18 @@ indexes:
   properties:
   - name: date
   - name: book_id
+
+- kind: book_ranking
+  properties:
+  - name: date
+  - name: wish_ranking
+  - name: book_id
+
+- kind: book_ranking
+  properties:
+  - name: date
+  - name: wish_ranking
+    direction: desc
 
 - kind: book_ranking
   properties:

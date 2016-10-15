@@ -63,3 +63,16 @@ class Ranking(models.Model):
 
     def __unicode__(self):
         return str(self.date) + ": " + str(self.wish_ranking) + ": " + str(self.book_id)
+
+
+
+class Report(models.Model):
+    book = models.ForeignKey(
+        Book
+    )
+    created = models.DateTimeField(
+        auto_now_add=True
+    )
+    updated = models.DateTimeField(
+        auto_now=True
+    )

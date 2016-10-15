@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 
-from book.models import Ranking, Book
+from book.models import Ranking, Book, Report
 from book.serializers import BookSerializer
 from book.tasks import post_to_slack
 from pytz import UTC
@@ -20,8 +20,10 @@ class BookView(APIView):
         yesterday_ranking = Ranking.objects.filter(date=yesterday).values_list("book_id", flat=True)
         today_ranking = Ranking.objects.filter(date=today).values_list("book_id", flat=True)
         diff = filter(lambda x: x not in yesterday_ranking, today_ranking)
-        # TODO: 以前に通知したかどうか
-        rankings = Ranking.objects.filter(book_id__in=diff).prefetch_related("book").order_by("-wish_ranking")
+        diff = diff[:30]
+        rankings = Ranking.objects.filter(
+            date=today, book_id__in=diff
+        ).prefetch_related("book").order_by("-wish_ranking")
         results = {
             "books": [BookSerializer(ranking.book).data for ranking in rankings]
         }

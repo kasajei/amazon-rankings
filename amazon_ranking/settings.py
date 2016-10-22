@@ -129,7 +129,7 @@ CSP_DEFAULT_SRC = ("'self'", "*.gstatic.com")
 CSP_STYLE_SRC = ("'self'", "'unsafe-inline'", "fonts.googleapis.com", "*.gstatic.com", "'unsafe-inline'")
 CSP_FONT_SRC = ("'self'", "themes.googleusercontent.com", "*.gstatic.com")
 CSP_FRAME_SRC = ("'self'", "www.google.com", "www.youtube.com", "accounts.google.com", "apis.google.com", "plus.google.com")
-CSP_SCRIPT_SRC = ("'self'", "*.googleanalytics.com", "*.google-analytics.com", "ajax.googleapis.com", "'unsafe-inline'")
+CSP_SCRIPT_SRC = ("'self'", "*.googleanalytics.com", "*.google-analytics.com", "ajax.googleapis.com", "*.twitter.com", "'unsafe-inline'")
 CSP_IMG_SRC = ("'self'", "data:", "s.ytimg.com", "*.googleusercontent.com", "*.gstatic.com", "www.google-analytics.com")
 CSP_CONNECT_SRC = ("'self'", "plus.google.com", "www.google-analytics.com")
 
@@ -148,3 +148,8 @@ REST_FRAMEWORK = {
 SLACK_HOOK_URL = get_app_config().slack_url
 SLACK_DEFAULTS_USERNAME = u"Amazonおすすめ"
 SLACK_DEFAULTS_CHANNEL = u"#playground"
+
+TWITTER_CONSUMER_KEY = get_app_config().twitter_consumer_key
+TWITTER_CONSUMER_SECRET = get_app_config().twitter_consumer_secret
+TWITTER_ACCESS_TOKEN = get_app_config().twitter_access_token
+TWITTER_ACCESS_TOKEN_SECRET = get_app_config().twitter_access_token_secret

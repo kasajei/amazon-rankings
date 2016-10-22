@@ -30,6 +30,11 @@ def get_app_config():
         """A simple key-value store for application configuration settings."""
         secret_key = ndb.StringProperty()
         slack_url = ndb.StringProperty()
+        twitter_access_token = ndb.StringProperty()
+        twitter_access_token_secret = ndb.StringProperty()
+        twitter_consumer_key = ndb.StringProperty()
+        twitter_consumer_secret = ndb.StringProperty()
+
 
     # Create a random SECRET_KEY
     chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
@@ -46,6 +51,12 @@ def get_app_config():
             entity.put()
         if not entity.slack_url:
             entity.slack_url = "YOUR_SLACK_HOOK_URL_HERE"
+            entity.put()
+        if not entity.twitter_access_token:
+            entity.twitter_access_token = "TWITTER_ACCESS_TOKEN"
+            entity.twitter_access_token_secret = "TWITTER_ACCESS_TOKEN_SECRET"
+            entity.twitter_consumer_key = "TWITTER_CONSUMER_KEY"
+            entity.twitter_consumer_secret = "TWITTER_CONSUMER_SECRET"
             entity.put()
         return entity
     return txn()

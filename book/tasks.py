@@ -3,6 +3,7 @@ import datetime
 import json
 import logging
 
+import tweepy
 from google.appengine.api import urlfetch
 from google.appengine.api.taskqueue import taskqueue
 
@@ -145,10 +146,6 @@ class PostToSlack(APIView):
         Slackへポスト
         ---
         parameters:
-                -   name: APIKEY
-                    type: string
-                    paramType: header
-                    defaultValue: zBwjuGLAe7m2FaWv
                 -   name: text
                     type: string
                 -   name: username
@@ -180,7 +177,39 @@ class PostToSlack(APIView):
             )
             print resutls.content
         except Exception as e:
-            print e
-            print e.description
-            pass
+            logging.info(e)
+        return Response()
+
+
+
+def post_to_twitter(text, image_url=None):
+    taskqueue.add(
+        url="/book/tasks/tweet",
+        params={
+            u"text": text,
+            u"image_url": image_url if image_url else u""
+        })
+
+
+
+class PostToTitter(APIView):
+    def post(self, request):
+        """
+        Twitterへポスト
+        ---
+        parameters:
+                -   name: text
+                    type: string
+                -   name: image_url
+                    type: string
+        """
+        text = request.POST.get("text")
+        image_url = request.POST.get("image_url")
+        try:
+            auth = tweepy.OAuthHandler(settings.TWITTER_CONSUMER_KEY, settings.TWITTER_CONSUMER_SECRET)
+            auth.set_access_token(settings.TWITTER_ACCESS_TOKEN, settings.TWITTER_ACCESS_TOKEN_SECRET)
+            api = tweepy.API(auth)
+            api.update_status(status=text)
+        except Exception as e:
+            logging.info(e)
         return Response()

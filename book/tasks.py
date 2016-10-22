@@ -16,6 +16,7 @@ from rest_framework.views import APIView
 from bs4 import BeautifulSoup
 
 
+
 class CheckRankingPeriodicTask(APIView):
     def scrape_books(self, htmltext):
         books = []
@@ -104,6 +105,9 @@ class BookPostTaskView(APIView):
             book_id__in=report
         ).prefetch_related("book").order_by("-wish_ranking")
         for ranking in rankings:
+            post_to_twitter(
+                ranking.book.author + u"「" + ranking.book.title + u"」\n\n" + ranking.book.url + u"?tag=kasajei-22"
+            )
             post_to_slack(ranking)
             Report.objects.get_or_create(book=ranking.book)
         return Response()
@@ -186,8 +190,7 @@ def post_to_twitter(text, image_url=None):
     taskqueue.add(
         url="/book/tasks/tweet",
         params={
-            u"text": text,
-            u"image_url": image_url if image_url else u""
+            u"text": text
         })
 
 
@@ -204,7 +207,6 @@ class PostToTitter(APIView):
                     type: string
         """
         text = request.POST.get("text")
-        image_url = request.POST.get("image_url")
         try:
             auth = tweepy.OAuthHandler(settings.TWITTER_CONSUMER_KEY, settings.TWITTER_CONSUMER_SECRET)
             auth.set_access_token(settings.TWITTER_ACCESS_TOKEN, settings.TWITTER_ACCESS_TOKEN_SECRET)

@@ -153,3 +153,7 @@ TWITTER_CONSUMER_KEY = get_app_config().twitter_consumer_key
 TWITTER_CONSUMER_SECRET = get_app_config().twitter_consumer_secret
 TWITTER_ACCESS_TOKEN = get_app_config().twitter_access_token
 TWITTER_ACCESS_TOKEN_SECRET = get_app_config().twitter_access_token_secret
+
+
+BITLY_LOGIN = get_app_config().bitly_login
+BITLY_API_KEY = get_app_config().bitly_api_key

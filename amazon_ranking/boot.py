@@ -34,6 +34,8 @@ def get_app_config():
         twitter_access_token_secret = ndb.StringProperty()
         twitter_consumer_key = ndb.StringProperty()
         twitter_consumer_secret = ndb.StringProperty()
+        bitly_login = ndb.StringProperty()
+        bitly_api_key = ndb.StringProperty()
 
 
     # Create a random SECRET_KEY
@@ -57,6 +59,10 @@ def get_app_config():
             entity.twitter_access_token_secret = "TWITTER_ACCESS_TOKEN_SECRET"
             entity.twitter_consumer_key = "TWITTER_CONSUMER_KEY"
             entity.twitter_consumer_secret = "TWITTER_CONSUMER_SECRET"
+            entity.put()
+        if not entity.bitly_login:
+            entity.bitly_login = "BITLY_LOGIN"
+            entity.bitly_api_key = "BITLY_API_KEY"
             entity.put()
         return entity
     return txn()

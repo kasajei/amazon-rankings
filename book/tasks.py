@@ -14,8 +14,12 @@ from django.conf import settings
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from bs4 import BeautifulSoup
+import bitly_api
 
 
+def get_shot_url(url):
+    bitly = bitly_api.Connection(settings.BITLY_LOGIN, settings.BITLY_API_KEY)
+    return bitly.shorten(url)["url"].encode("utf-8")
 
 class CheckRankingPeriodicTask(APIView):
     def scrape_books(self, htmltext):
@@ -106,7 +110,7 @@ class BookPostTaskView(APIView):
         ).prefetch_related("book").order_by("-wish_ranking")
         for ranking in rankings:
             post_to_twitter(
-                ranking.book.author + u"「" + ranking.book.title + u"」\n\n" + ranking.book.url + u"?tag=kasajei-22"
+                ranking.book.author + u"「" + ranking.book.title + u"」\n\n" + get_shot_url(ranking.book.url+u"?tag=kasajei-22")
             )
             post_to_slack(ranking)
             Report.objects.get_or_create(book=ranking.book)

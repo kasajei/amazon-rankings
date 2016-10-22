@@ -119,7 +119,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 # Using a route that is not caught by appengines routing in app.yaml
-STATIC_URL = '/static-dev/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # sensible default CSP settings, feel free to modify them

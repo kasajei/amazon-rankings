@@ -58,7 +58,7 @@ class CheckRankingPeriodicTask(APIView):
         wish_list_ranking = "https://www.amazon.co.jp/gp/most-wished-for/books/"
         books = []
         # 全部のランキングを取得する
-        for i in range(1, 2):
+        for i in range(1, 6):
             results = urlfetch.fetch(
                 url=wish_list_ranking + u"?pg=" + str(i),
                 method=urlfetch.GET

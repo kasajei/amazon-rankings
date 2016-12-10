@@ -27,20 +27,23 @@ class CheckRankingPeriodicTask(APIView):
         soup = BeautifulSoup(htmltext, "html.parser")
         for el in soup.findAll("div", {"class": "zg_itemRow"}):
             book = Book()
-            book.title = el.findAll("div", {"class": "zg_title"})[0].findAll("a")[0].text.strip()
-            book.url = el.findAll("div", {"class": "zg_title"})[0].findAll("a")[0].get("href").strip()
-            book.id = book.url.split("/")[-1]
-            book.author = el.findAll("div", {"class": "zg_byline"})[0].text.strip()
+            book.title = el.findAll("img")[0].get("alt", "").encode("utf-8")
+            book.url = "https://www.amazon.co.jp/"+el.findAll("a", {"class": "a-link-normal"})[0].get("href").strip()
+            book.id = book.url.split("/")[-1].split("?")[0]
+            try :
+                book.author = el.findAll("div", {"class": "a-row a-size-small"})[0].findAll("a",{"class":"a-size-small a-link-child"})[0].text.strip()
+            except:
+                book.author = el.findAll("div", {"class": "a-row a-size-small"})[0].findAll("span",{"class":"a-size-small a-color-base"})[0].text.strip()
             try:
-                book.price = el.findAll(
-                    "span", {"class": "price"}
-                )[0].findAll("b")[0].text.strip().replace(u"￥ ", "").replace(",", "")
+                book.price = int(el.findAll(
+                    "span", {"class": "a-size-base a-color-price"}
+                )[0].text.strip().replace(u"￥", "").replace(",", ""))
             except:
                 book.price = 0
             try:
-                book.star = el.findAll(
+                book.star = float(el.findAll("i", {"class": "a-icon-star"})[0].findAll(
                     "span", {"class": "a-icon-alt"}
-                )[0].text.strip().replace(u"5つ星のうち ", "")
+                )[0].text.strip().replace(u"5つ星のうち ", ""))
             except:
                 book.star = 0
             book.image_url = el.findAll("img")[0].get("src").strip()
@@ -55,7 +58,7 @@ class CheckRankingPeriodicTask(APIView):
         wish_list_ranking = "https://www.amazon.co.jp/gp/most-wished-for/books/"
         books = []
         # 全部のランキングを取得する
-        for i in range(1, 6):
+        for i in range(1, 2):
             results = urlfetch.fetch(
                 url=wish_list_ranking + u"?pg=" + str(i),
                 method=urlfetch.GET
@@ -109,11 +112,28 @@ class BookPostTaskView(APIView):
             book_id__in=report
         ).prefetch_related("book").order_by("-wish_ranking")
         for ranking in rankings:
-            post_to_twitter(
-                ranking.book.author + u"「" + ranking.book.title + u"」\n\n" + get_shot_url(ranking.book.url+u"?tag=kasajei-22")
-            )
-            post_to_slack(ranking)
-            Report.objects.get_or_create(book=ranking.book)
+            if not settings.DEBUG:
+                post_to_twitter(
+                    ranking.book.author + u"「" + ranking.book.title + u"」\n\n" + get_shot_url(ranking.book.url+u"?tag=kasajei-22")
+                )
+                post_to_slack(ranking)
+                Report.objects.get_or_create(book=ranking.book)
+
+        if today_ranking.count() == 0:
+            payload = {
+                "channel": settings.SLACK_DEFAULTS_CHANNEL,
+                "icon_emoji": ":scream:",
+                "username": "Something Wrong!!",
+                "text": "Something Wrong!!",
+            }
+            try:
+                urlfetch.fetch(
+                    url=settings.SLACK_HOOK_URL,
+                    payload=json.dumps(payload),
+                    method=urlfetch.POST
+                )
+            except Exception as e:
+                logging.info(e)
         return Response()
 
 

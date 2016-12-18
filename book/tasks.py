@@ -33,7 +33,10 @@ class CheckRankingPeriodicTask(APIView):
             try :
                 book.author = el.findAll("div", {"class": "a-row a-size-small"})[0].findAll("a",{"class":"a-size-small a-link-child"})[0].text.strip()
             except:
-                book.author = el.findAll("div", {"class": "a-row a-size-small"})[0].findAll("span",{"class":"a-size-small a-color-base"})[0].text.strip()
+                try:
+                    book.author = el.findAll("div", {"class": "a-row a-size-small"})[0].findAll("span",{"class":"a-size-small a-color-base"})[0].text.strip()
+                except:
+                    book.author = u"著者不明"
             try:
                 book.price = int(el.findAll(
                     "span", {"class": "a-size-base a-color-price"}
